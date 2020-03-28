@@ -1,0 +1,54 @@
+#FROM tensorflow/serving
+#
+#COPY saved_model models/saved_model
+#
+#EXPOSE 8501
+
+#CMD tensorflow_model_server \
+#  --port=8500 \
+#  --rest_api_port=8501 \
+#  --model_name="saved_model" \
+#  --model_base_path="models/saved_model"
+#
+#### Start TensorFlow Serving container and open the REST API port
+##docker run -t --rm -p 8501:8501 \
+##    -v "$(pwd)/../saved_model:/models/saved_model" \
+##    -e MODEL_NAME=saved_model \
+##    tensorflow/serving &
+###
+#### Query the model using the predict API
+###curl -d '{"instances": [1.0, 2.0, 5.0]}' \
+###    -X POST http://localhost:8501/v1/models/half_plus_two:predict
+###
+#### Returns => { "predictions": [2.5, 3.0, 4.5] }
+
+
+# Source: https://github.com/yu-iskw/tensorflow-serving-example/blob/master/Dockerfile
+
+FROM ubuntu:18.04
+
+# Install general packages
+RUN apt-get update && apt-get install -y \
+        curl \
+        libcurl3-dev \
+        unzip \
+        wget \
+        && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Tensorflow Serving.
+RUN TEMP_DEB="$(mktemp)" \
+    && wget -O "$TEMP_DEB" 'http://storage.googleapis.com/tensorflow-serving-apt/pool/tensorflow-model-server-1.15.0/t/tensorflow-model-server/tensorflow-model-server_1.15.0_all.deb' \
+    && dpkg -i "$TEMP_DEB" \
+    && rm -f "$TEMP_DEB"
+
+COPY saved_model models/saved_model/
+
+EXPOSE 8501
+
+# Serve the model when the container starts.
+CMD tensorflow_model_server \
+  --rest_api_port=8501 \
+  --model_name="saved_model" \
+  --model_base_path="/models/saved_model"
