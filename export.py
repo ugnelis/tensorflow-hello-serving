@@ -4,16 +4,20 @@ import tensorflow as tf
 
 def serving_input_receiver_fn():
     """Serving input_fn that builds features from placeholders"""
+    feature_placeholders = {
+        'f1': tf.placeholder(dtype=tf.float32, shape=[None]),
+        'f2': tf.placeholder(dtype=tf.float32, shape=[None]),
+        'f3': tf.placeholder(dtype=tf.float32, shape=[None]),
+        'f4': tf.placeholder(dtype=tf.float32, shape=[None])
+    }
     features = {
-        'f1': tf.placeholder(dtype=tf.float32, shape=[None, 1]),
-        'f2': tf.placeholder(dtype=tf.float32, shape=[None, 1]),
-        'f3': tf.placeholder(dtype=tf.float32, shape=[None, 1]),
-        'f4': tf.placeholder(dtype=tf.float32, shape=[None, 1])
+        key: tf.expand_dims(tensor, -1)
+        for key, tensor in feature_placeholders.items()
     }
-    receiver_tensors = {
-        'f5': tf.placeholder(dtype=tf.int32, shape=[None, 1])
-    }
-    return tf.estimator.export.ServingInputReceiver(features, receiver_tensors)
+    return tf.estimator.export.ServingInputReceiver(
+        features=features,
+        receiver_tensors=feature_placeholders
+    )
 
 
 def run(model_dir, output_dir):
