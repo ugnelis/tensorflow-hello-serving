@@ -41,7 +41,10 @@ def run(model_dir, output_dir):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_dir', help='Directory of the trained model.', default='models', type=str)
-    parser.add_argument('--output_dir', help='Directory of output model.', default='exported_models/hello', type=str)
+    parser.add_argument('--output_dir',
+                        help='Directory of output protobuf (.pb) model.',
+                        default='exported_models/hello',
+                        type=str)
 
     args = parser.parse_args()
     run(args.model_dir, args.output_dir)
