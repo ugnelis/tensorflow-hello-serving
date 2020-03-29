@@ -1,4 +1,4 @@
-import sys
+import argparse
 import tensorflow as tf
 
 
@@ -40,4 +40,14 @@ def run(model_dir, inputs):
 
 
 if __name__ == "__main__":
-    run(sys.argv[1], [float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), float(sys.argv[5])])
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model_dir', help='Directory of the trained model.', default='models', type=str)
+    parser.add_argument('--inputs',
+                        help='Array of inputs.',
+                        default='6.4,2.9,4.3,1.3',
+                        type=lambda s: [float(item) for item in s.split(',')])
+
+    args = parser.parse_args()
+    assert (len(args.inputs) == 4), "Inputs can only consist of 4 items."
+
+    run(args.model_dir, args.inputs)
