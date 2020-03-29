@@ -1,2 +1,4 @@
 #!/bin/sh
-python export.py models saved_model
+python export.py \
+  --model_dir models \
+  --output_dir exported_models/hello
