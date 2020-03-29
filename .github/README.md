@@ -15,14 +15,14 @@ $ ./train.sh
 Prediction using the trained model:
  
 ```bash
-$ ./predict.py
+$ ./predict.sh
 ```
 
 ## Development (with Docker)
 
 ### Build Docker Image
 
-In order to run this project as a Docker container, an Docker image has to be built:
+In order to run this project as a Docker container, a Docker image has to be built:
 ```bash
 $ docker build --file Dockerfile.development -t hello-development:1.0 .
 ```
